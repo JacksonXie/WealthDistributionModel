@@ -5,4 +5,5 @@
 <fullyQualifiedTypeName name="java.io.DataInputStream"/>
 <fullyQualifiedTypeName name="java.net.Socket"/>
 <fullyQualifiedTypeName name="org.kohsuke.args4j.Option"/>
+<fullyQualifiedTypeName name="java.net.DatagramSocket"/>
 </qualifiedTypeNameHistroy>
