@@ -1,52 +1,83 @@
 package wealthDistribution;
-
+//TODO maxWealth for social class
+//TODO TEST
 public class mainTest {
+	//lorenz-and-gini
+	public static int totalWealth;
+	public static int maxWealth;
 	//parameters of coordinate
     public static int xLocationMax = 10;
     public static int yLocationMax = 10;
-    public static int ticks = 100;
+    public static int ticks = 10;
  
 	//parameters of people 
 	public static int lifeExpectancyMax = 100;
 	public static int lifeExpectancyMin = 50;
 	public static int metabolismMax = 100;
 	public static int maxVision = 4;
-	public static int peopleNumber = 1;
+	public static int peopleNumber = 3;
 	//parameters of land
 	public static int maxGrain = 50;
 	public static double percentBestLand = 20.0;
+	public static int grainGrowthInterval = 1;
+	public static int numGrainGrow = 5;
+	
 	public static void main(String[] args) {
 		 Land[][] landArray = new Land[yLocationMax][xLocationMax];
 		 Land[][] futureLandArray = new Land[yLocationMax][xLocationMax];
 		 Person[] personArray = new Person[peopleNumber];
 		 initializePeople(personArray);
 		 initializeLand(landArray,futureLandArray);
-		/*for (int i=0;i<landArray.length;i++)
-				for(int j=0;j<landArray[i].length;j++){
-					System.out.println("x: "+j+"y: "+i+" "+"grain: "+landArray[i][j].getGrainHere());
-				}
-		 for (int i=0;i<personArray.length;i++){
-				System.out.println(Person.toString(personArray[i]));
-			}*/
-		 runTheSystem(personArray,landArray,futureLandArray);
-		/*for (int i=0;i<personArray.length;i++){
-					System.out.println("after: "+personArray[i].getHeadDirection());
-				}*/
+		 for(int N=ticks;N>=0;N--){
+			 runTheSystem(personArray,landArray,futureLandArray,N);
+			 System.out.println("N:"+N);
+			 for (int i=0;i<personArray.length;i++){
+				 System.out.println(Person.toString(personArray[i]));
+			 }
+		 }
 	}
 	private static void initializePeople(Person[] personArray){
 		for (int i=0;i<personArray.length;i++){
-			 int lifeExpectancy = Calculator.getLifeExpectancy(lifeExpectancyMax,lifeExpectancyMin);
-			 int age = Calculator.getAge(lifeExpectancy);
-			 int metabolism = Calculator.getMetabolism(metabolismMax);
-			 int vision = Calculator.getVision(maxVision);
-			 int xLocation = Calculator.getXLocation(xLocationMax);
-			 int yLocation = Calculator.getYLocation(yLocationMax);
-     		 int HeadDirection = Calculator.getHeadDirection();
-             int wealth = Calculator.getWealth(metabolism);
-             int nextXLocation = 0;
-             int nextYLocation = 0;
-			 personArray[i]  = new Person(age,wealth,lifeExpectancy,metabolism,vision,xLocation,yLocation,HeadDirection,nextXLocation,nextYLocation);
+			 initializeAPerson(personArray,i);
+			 int wealth = personArray[i].getWealth();
+			 totalWealth= totalWealth +wealth;
+			 if(wealth>maxWealth){
+				 maxWealth = wealth;
+			 }
 		}
+		for(int i=0;i<personArray.length;i++){
+			int wealth = personArray[i].getWealth();
+			int socialClass = getSocialClass(maxWealth,wealth);
+			
+			personArray[i].setSocialClass(socialClass);
+		}
+	}
+	private static void initializeAPerson(Person[] personArray, int i){
+		 int lifeExpectancy = Calculator.getLifeExpectancy(lifeExpectancyMax,lifeExpectancyMin);
+		 int age = Calculator.getAge(lifeExpectancy);
+		 int metabolism = Calculator.getMetabolism(metabolismMax);
+		 int vision = Calculator.getVision(maxVision);
+		 int xLocation = Calculator.getXLocation(xLocationMax);
+		 int yLocation = Calculator.getYLocation(yLocationMax);
+		 int HeadDirection = Calculator.getHeadDirection();
+         int wealth = Calculator.getWealth(metabolism);
+         int nextXLocation = 0;
+         int nextYLocation = 0;
+		 personArray[i]  = new Person(age,wealth,lifeExpectancy,metabolism,vision,xLocation,yLocation,HeadDirection,nextXLocation,nextYLocation);
+	}
+	private static int getSocialClass(int maxWealth,int wealth){
+		int socialClass = 0;
+		if(wealth<(1/3)*maxWealth){
+			socialClass = 1;
+		}else if(wealth<(2/3)*maxWealth){
+			socialClass = 2;
+		}else if(wealth>=(2/3)*maxWealth){
+			socialClass = 3;
+			System.out.println("check class");
+		}else{
+			socialClass = 0;
+		}
+		return socialClass;
 	}
 	private static void initializeLand(Land[][] landArray, Land[][] futureLandArray){
 		int eachNeighborGetFive = (int)Math.floor(5*maxGrain*0.25*0.125);
@@ -54,12 +85,12 @@ public class mainTest {
 		for (int i=0;i<landArray.length;i++)
 			for(int j=0;j<landArray[i].length;j++){
 				int grainHere = Calculator.getGrainHere(percentBestLand,maxGrain);
-				landArray[i][j] = new Land(grainHere,grainHere,j,i);
+				landArray[i][j] = new Land(grainHere,grainHere,j,i,0);
 			}
 		// initialize future land
 		for (int i=0;i<landArray.length;i++)
 			for(int j=0;j<landArray[i].length;j++){
-				futureLandArray[i][j] = new Land(0,0,j,i);
+				futureLandArray[i][j] = new Land(0,0,j,i,0);
 			}
 		//diffuse repeat 5 times
 		for (int i=0;i<landArray.length;i++)
@@ -80,13 +111,7 @@ public class mainTest {
 					landArray[i][j].setGrainHere(futureLandArray[i][j].getGrainHere());
 				}
 		}	
-	}
-	private static void runTheSystem(Person[] personArray,Land[][] landArray,Land[][] futureLandArray){
-		//turn-towards-grain
-		turnTowardsGrain(personArray,landArray);
-		
-	}
-	
+	}	
 	private static void diffuseGrain(Land[][] landArray,Land[][] futureLandArray,int i,int j,int eachNeighborGetFive ){
 		for(int m=i-1;m<=i+1;m++)
 			for(int n=j-1;n<=j+1;n++){
@@ -116,6 +141,13 @@ public class mainTest {
 				}
 			}
 	}
+	private static void runTheSystem(Person[] personArray,Land[][] landArray,Land[][] futureLandArray,int tick){
+		//turn-towards-grain
+		turnTowardsGrain(personArray,landArray);
+		moveEatAgeDie(personArray,landArray,futureLandArray);
+		staticEachLandPeopleNumber(landArray,personArray);
+		growGrain(landArray,futureLandArray,tick);
+	}
 	private static void turnTowardsGrain(Person[] personArray,Land[][] landArray){
 		int nextHeadDirection = 0;
 		int currentMaxGrain = 0;
@@ -126,7 +158,6 @@ public class mainTest {
 			int HeadDirection = personArray[i].getHeadDirection();
 			for(int t=0;t<4;t++){
 				int currentHeadDirection = (HeadDirection+t)%4;//change Direction each time;
-				System.out.println("t: "+currentHeadDirection);
 				switch(currentHeadDirection) {
 			    	case 0: nextMoveLocation = checkHeadDirection(maxVision,landArray,xLocation,yLocation,0,-1);
 			    			break;
@@ -145,6 +176,8 @@ public class mainTest {
 				}
 			}
 			personArray[i].setHeadDirection(nextHeadDirection);
+			personArray[i].setNextXLocation(nextMoveLocation[0]);
+			personArray[i].setNextYLocation(nextMoveLocation[1]);
 		}
 	}
 	private static int[] checkHeadDirection(int maxVision,Land[][] landArray,int x,int y,int addx,int addy){
@@ -178,5 +211,92 @@ public class mainTest {
 			}
 		}
 		return nextMoveLocation;
+	}
+	private static void moveEatAgeDie(Person[] personArray,Land[][] landArray,Land[][] futureLandArray){
+		for (int i=0;i<personArray.length;i++){
+			// calculate the values of people
+			int metabolism = personArray[i].getMetabolism();
+			int currentWealth = personArray[i].getWealth()-metabolism;
+			int currentAge = personArray[i].getAge()+1;
+			int lifeExpectancy = personArray[i].getLifeExpectancy();
+			//if person die, then random create a new person.else move to a new land
+			if(currentWealth<0||currentAge>=lifeExpectancy){
+				initializeAPerson(personArray,i);
+				int wealth = personArray[i].getWealth();
+				totalWealth= totalWealth +wealth;
+				if(wealth>maxWealth){
+					 maxWealth = wealth;
+				}
+				int socialClass = getSocialClass(maxWealth,wealth);
+				personArray[i].setSocialClass(socialClass);
+			}else{
+				int currentXLocation = personArray[i].getxLocation();
+				int currentYLocation = personArray[i].getyLocation();
+				int nextXLocation = personArray[i].getNextXLocation();
+				int nextYLocation = personArray[i].getNextYLocation();
+				personArray[i].setxLocation(nextXLocation);
+				personArray[i].setyLocation(nextYLocation);
+				int landCurrentPeopleNumber = landArray[currentYLocation][currentXLocation].getLandPeopleNumber();
+				landArray[currentYLocation][currentXLocation].setLandPeopleNumber(landCurrentPeopleNumber-1);
+				int nextLandPeopleNumber = landArray[nextYLocation][nextXLocation].getLandPeopleNumber();
+				landArray[nextYLocation][nextXLocation].setLandPeopleNumber(nextLandPeopleNumber+1);
+				personArray[i].setAge(currentAge);
+				personArray[i].setWealth(currentWealth);
+				int socialClass = getSocialClass(maxWealth,currentWealth);
+				personArray[i].setSocialClass(socialClass);
+			}
+		}
+		// static people on lands
+		staticEachLandPeopleNumber(landArray,personArray);
+		//harvest
+		for (int i=0;i<personArray.length;i++){
+			int currentXLocation = personArray[i].getxLocation();
+			int currentYLocation = personArray[i].getyLocation();
+			int grainHere = landArray[currentYLocation][currentXLocation].getGrainHere();
+			int peopleHere = landArray[currentYLocation][currentXLocation].getLandPeopleNumber();
+			int currentWealth = personArray[i].getWealth();
+			int wealth = 0;
+			if(peopleHere!=0){
+				wealth = (int)Math.floor(currentWealth + grainHere/peopleHere);
+			}
+			personArray[i].setWealth(wealth);
+			//mark grain here zero
+			futureLandArray[currentYLocation][currentXLocation].setGrainHere(0);
+		}
+		//set Grain Here zero
+		for (int i=0;i<landArray.length;i++)
+			for(int j=0;j<landArray[i].length;j++){
+				int grainHere = futureLandArray[i][j].getGrainHere();
+				landArray[i][j].setGrainHere(grainHere);
+			}
+	}
+	private static void staticEachLandPeopleNumber(Land[][] landArray,Person[] personArray){
+		for (int i=0;i<personArray.length;i++){
+			int xLocation = personArray[i].getxLocation();
+			int yLocation = personArray[i].getyLocation();
+			int currentPeople = landArray[yLocation][xLocation].getLandPeopleNumber();
+			landArray[yLocation][xLocation].setLandPeopleNumber(currentPeople+1);
+		}
+	}
+	private static void growGrain(Land[][] landArray,Land[][] futureLandArray,int tick){
+		if(tick%grainGrowthInterval==0){
+			for (int i=0;i<futureLandArray.length;i++)
+				for(int j=0;j<futureLandArray[i].length;j++){
+					int grainHere = landArray[i][j].getGrainHere();
+					int grainMaxHere = landArray[i][j].getMaxGrainHere();
+					if(grainHere<grainMaxHere){
+						grainHere+=numGrainGrow;
+						if(grainHere>grainMaxHere){
+							grainHere = grainMaxHere;
+						}
+						futureLandArray[i][j].setGrainHere(grainHere);
+					}
+				}
+			for (int i=0;i<landArray.length;i++)
+				for(int j=0;j<landArray[i].length;j++){
+					int grainHere = futureLandArray[i][j].getGrainHere();
+					landArray[i][j].setGrainHere(grainHere);
+				}
+			}
 	}
 }

@@ -5,7 +5,8 @@ public class Land {
 	private int maxGrainHere;
 	private int landxLocation;
 	private int landyLocation;
-	public Land(int grainHere,int maxGrainHere,int landxLocation,int landyLocation){
+	private int landPeopleNumber;
+	public Land(int grainHere,int maxGrainHere,int landxLocation,int landyLocation,int landPeopleNumber){
 		this.setGrainHere(grainHere);
 		this.setMaxGrainHere(maxGrainHere);
 		this.setLandxLocation(landxLocation);
@@ -34,6 +35,12 @@ public class Land {
 	}
 	public void setLandyLocation(int landyLocation) {
 		this.landyLocation = landyLocation;
+	}
+	public int getLandPeopleNumber() {
+		return landPeopleNumber;
+	}
+	public void setLandPeopleNumber(int landPeopleNumber) {
+		this.landPeopleNumber = landPeopleNumber;
 	}
 	
 }

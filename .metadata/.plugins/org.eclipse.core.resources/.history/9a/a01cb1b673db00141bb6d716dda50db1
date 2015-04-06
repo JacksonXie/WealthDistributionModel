@@ -1,0 +1,12 @@
+package knowledgeTechnology;
+
+public class mainTest {
+
+	public static void main(String[] args) {
+		String trs = "king";
+		String code = Soundex.soundex(trs);
+		System.out.println(code);
+
+	}
+
+}

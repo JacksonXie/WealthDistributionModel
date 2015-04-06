@@ -1,0 +1,11 @@
+package knowledgeTechnology;
+//TODO build up all class  
+public class mainTest {
+
+	public static void main(String[] args) {
+		String code = Soundex.soundex("night");
+		System.out.println(code);
+
+	}
+
+}
