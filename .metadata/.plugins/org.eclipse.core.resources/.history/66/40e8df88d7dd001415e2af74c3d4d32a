@@ -1,0 +1,51 @@
+
+public class ThreadSynchTest {
+
+	public static void main(String[] args) {
+		final Printer p1 = new Printer();
+		final Printer p2 = new Printer();
+		
+		// Create a new Thread which uses p2 to print
+		// Use either lambda or anonymous class to create the Runnable
+	/*	Runnable runnable = new Runnable() {
+			@Override
+			public void run() {
+				p2.print("Second Thread");
+			}
+		};*/
+		Runnable runnable = () -> p2.print("Second Thread");
+		Thread t = new Thread(runnable);
+		t.start();
+		
+		// Run p1.print in the main thread
+		p1.print("Main Thread");
+	}
+	
+	private static class Printer {
+		public void print(String name) {
+			// Synchronise by System.out
+			synchronized (System.out){
+				for (int i = 0; i < 10; i++) {
+					try {
+						Thread.sleep(1000);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+					System.out.println(name);
+				}
+			}
+		}
+	}
+	private static class Calculator{
+		public void addNumber(int number){
+			synchronized (System.out){
+				try{
+					System.out.println(10+number);
+				}catch(InterruptedException e){
+					e.printStackTrace();
+				}
+			}
+		}
+	}
+
+}

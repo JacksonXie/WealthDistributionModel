@@ -1,0 +1,24 @@
+package wealthDistribution;
+
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.List;
+
+public class CsvFileWriter {
+	private static final String SPACE = " ";
+	private static final String NEW_LINE_SEPARATOR = "\n";
+	private static final String FILE_HEADER = "id,Wealth";
+	
+	public static void writeCsvFile(String fileName,Person[] personArray){
+		FileWriter fileWriter = null;
+		try {
+			fileWriter = new FileWriter(fileName);
+
+			//Write the CSV file header
+			fileWriter.append(FILE_HEADER.toString());
+			
+			//Add a new line separator after the header
+			fileWriter.append(NEW_LINE_SEPARATOR);
+		}
+	}
+}

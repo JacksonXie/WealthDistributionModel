@@ -1,0 +1,14 @@
+
+package sampleTest;
+
+import org.kohsuke.args4j.CmdLineException;
+import org.kohsuke.args4j.CmdLineParser;
+import org.kohsuke.args4j.Option;
+
+public class mainClass {
+
+	public static void main(String[] args) throws CmdLineException{
+		System.out.println(args[0]);
+	}
+
+}

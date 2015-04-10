@@ -1,0 +1,114 @@
+import org.kohsuke.args4j.CmdLineException;
+import org.kohsuke.args4j.CmdLineParser;
+import org.kohsuke.args4j.Option;
+
+/**
+ * Demonstrates how to parse command line args with args4j and how to
+ * work with threads.
+ */
+public class TestThreadAndCmdOptions {
+
+	public static void main(String[] args) throws CmdLineException, InterruptedException {
+		// Parse the command line options with the args4j library
+		CmdOptions cmdOptions = new CmdOptions();
+		CmdLineParser parser = new CmdLineParser(cmdOptions);
+		parser.parseArgument(args);
+		
+		// Create and second thread
+		Thread thread2 = new Thread(new TestRunnable(cmdOptions));
+		Thread thread3 = new Thread(new SecondTestRunnable(cmdOptions));
+		// You can set the thread as daemon with the following:
+		//thread2.setDaemon(true);
+		
+		// Start the second thread in parallel with the current/main thread
+		thread2.start();
+		thread3.start();
+		// Continue the execution of the current thread,
+		print("Main thread", cmdOptions.getSleepInterval());
+	}
+
+	/**
+	 * Prints a counter.
+	 * @param threadName - thread name. Not null.
+	 * @param sleep - seconds to sleep between printing.
+	 * @throws InterruptedException - if the current thread is interrupted.
+	 */
+	private static void print(String threadName, int sleep) throws InterruptedException {
+		for (int i = 0; i < 10; i++) {
+			// Puts the CURRENT THREAD to sleep
+			Thread.sleep(sleep * 1000);
+			System.out.println(threadName + " " + i);
+		}
+	}
+	private static void addNumber(int sleep,int number) throws InterruptedException{
+		int num = 2;
+		for(int i=0;i<10;i++){
+			Thread.sleep(sleep*2000);
+			num = num+number;
+			System.out.println(" num: "+num);
+		}
+	}
+
+	/**
+	 * The code/logic of the second thread.
+	 */
+	private static class TestRunnable implements Runnable {
+		private CmdOptions opt;
+		
+		public TestRunnable(CmdOptions opt) {
+			super();
+			this.opt = opt;
+		}
+
+		@Override
+		public void run() {
+			try {
+				print("Second Thread", opt.getSleepInterval());
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+		
+	}
+	private static class SecondTestRunnable implements Runnable{
+		private CmdOptions opt;
+		public SecondTestRunnable(CmdOptions opt){
+			super();
+			this.opt = opt;
+		}
+		@Override
+		public void run() {
+			try {
+				addNumber( opt.getSleepInterval(),opt.getNumber());
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	/**
+	 * Bean class with command line options.
+	 */
+	private static class CmdOptions {
+		// Give it a default value of 1 sec
+		@Option(name="-sleep", required=false)
+		private int sleepInterval = 1;
+
+		public int getSleepInterval() {
+			return sleepInterval;
+		}
+		@Option(name="-number", required=false)
+		private int number = 1;
+		public int getNumber(){
+			return number;
+		}
+		@SuppressWarnings("unused")
+		public void setSleepInterval(int sleepInterval) {
+			this.sleepInterval = sleepInterval;
+		}
+		@SuppressWarnings("unused")
+		public void setNumber(int number){
+			this.number = number;
+		}
+	}
+}

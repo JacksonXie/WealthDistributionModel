@@ -1,0 +1,21 @@
+
+package sampleTest;
+
+import java.io.IOException;
+import org.kohsuke.args4j.CmdLineException;
+import org.kohsuke.args4j.CmdLineParser;
+import org.kohsuke.args4j.Option;
+
+public class mainClass {
+	@Option(name="-str")
+    private String str ="(default value)";
+	public static void main(String[] args) throws IOException{
+		 CmdLineParser parser = new CmdLineParser(args);
+		 try{
+			 parser.parseArgument(args);
+			 if(str.isEmpty()){
+				 throw new CmdLineException(parser,"No argument is given");
+			 }
+		 }
+	}
+}

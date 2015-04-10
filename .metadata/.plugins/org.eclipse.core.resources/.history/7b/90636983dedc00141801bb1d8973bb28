@@ -1,0 +1,22 @@
+
+package sampleTest;
+
+import org.kohsuke.args4j.CmdLineException;
+import org.kohsuke.args4j.CmdLineParser;
+import org.kohsuke.args4j.Option;
+
+public class mainClass {
+	public static void main(String[] args) throws CmdLineException{
+		CmdOptions cmdOptions = new CmdOptions();
+		CmdLineParser parser = new CmdLineParser(cmdOptions);
+		parser.parseArgument(args);
+		System.out.println(cmdOptions.getSleepInterval());
+	}
+	private static class CmdOptions {
+		@Option(name="-sleep", required=false)
+		private int sleepInterval;
+		public int getSleepInterval() {
+			return sleepInterval;
+		}
+	}
+}

@@ -1,0 +1,30 @@
+
+package sampleTest;
+
+import java.io.IOException;
+
+import org.kohsuke.args4j.CmdLineException;
+import org.kohsuke.args4j.CmdLineParser;
+import org.kohsuke.args4j.Option;
+
+public class mainClass {
+	public static void main(String[] args) throws IOException{
+		 CmdLineParser parser = new CmdLineParser(args);
+		 if(recursive)
+	            System.out.println("-r flag is set");
+	}
+	private static class CmdOptions {
+		// Give it a default value of 1 sec
+		@Option(name="-sleep", required=false)
+		private int sleepInterval = 1;
+
+		public int getSleepInterval() {
+			return sleepInterval;
+		}
+
+		@SuppressWarnings("unused")
+		public void setSleepInterval(int sleepInterval) {
+			this.sleepInterval = sleepInterval;
+		}
+	}
+}

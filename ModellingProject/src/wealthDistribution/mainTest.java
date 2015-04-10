@@ -1,54 +1,83 @@
 package wealthDistribution;
-//TODO maxWealth for social class
-//TODO TEST
+
+import java.io.FileWriter;
+import java.io.IOException;
+
 public class mainTest {
-	//lorenz-and-gini
-	public static int totalWealth;
-	public static int maxWealth;
 	//parameters of coordinate
     public static int xLocationMax = 10;
     public static int yLocationMax = 10;
     public static int ticks = 10;
- 
 	//parameters of people 
 	public static int lifeExpectancyMax = 100;
 	public static int lifeExpectancyMin = 50;
 	public static int metabolismMax = 100;
 	public static int maxVision = 4;
-	public static int peopleNumber = 3;
+	public static int peopleNumber = 50;
+	public static int maxWealth;
+	public static String[][] records;
 	//parameters of land
 	public static int maxGrain = 50;
 	public static double percentBestLand = 20.0;
 	public static int grainGrowthInterval = 1;
 	public static int numGrainGrow = 5;
-	
+	//CsvFileWriter
+	private static final String COMMA_DELIMITER = ",";
+	private static final String NEW_LINE_SEPARATOR = "\n";
+	private static final String FILE_HEADER = "Wealth,ticks";
 	public static void main(String[] args) {
 		 Land[][] landArray = new Land[yLocationMax][xLocationMax];
 		 Land[][] futureLandArray = new Land[yLocationMax][xLocationMax];
 		 Person[] personArray = new Person[peopleNumber];
 		 initializePeople(personArray);
 		 initializeLand(landArray,futureLandArray);
-		 for(int N=ticks;N>=0;N--){
+		 String fileName = System.getProperty("user.dir")+"/demo.csv";
+		 FileWriter fileWriter = null;
+		 try {
+				fileWriter = new FileWriter(fileName);
+				//Write the CSV file header
+				fileWriter.append(FILE_HEADER.toString());	
+				//Add a new line separator after the header
+				fileWriter.append(NEW_LINE_SEPARATOR);
+			}catch (Exception e) {
+				System.out.println("Error in CsvFileWriter !!!");
+				e.printStackTrace();
+			} 
+		 for(int N=0;N<ticks;N++){
 			 runTheSystem(personArray,landArray,futureLandArray,N);
-			 System.out.println("N:"+N);
-			 for (int i=0;i<personArray.length;i++){
-				 System.out.println(Person.toString(personArray[i]));
-			 }
+			 try {
+					for(int i=0;i<personArray.length;i++){
+							fileWriter.append(String.valueOf(personArray[i].getWealth()));
+							fileWriter.append(COMMA_DELIMITER);
+							fileWriter.append(String.valueOf(N));
+							fileWriter.append(NEW_LINE_SEPARATOR);
+						}
+					fileWriter.flush();
+				}catch (Exception e) {
+					System.out.println("Error in CsvFileWriter !!!");
+					e.printStackTrace();
+				} 
 		 }
+		 try {
+			        fileWriter.flush();
+					fileWriter.close();
+			  } catch (IOException e) {
+					System.out.println("Error while flushing/closing fileWriter !!!");
+	                e.printStackTrace();
+			  }
+					
 	}
 	private static void initializePeople(Person[] personArray){
 		for (int i=0;i<personArray.length;i++){
 			 initializeAPerson(personArray,i);
 			 int wealth = personArray[i].getWealth();
-			 totalWealth= totalWealth +wealth;
-			 if(wealth>maxWealth){
+			 if(maxWealth < wealth){
 				 maxWealth = wealth;
 			 }
 		}
 		for(int i=0;i<personArray.length;i++){
 			int wealth = personArray[i].getWealth();
 			int socialClass = getSocialClass(maxWealth,wealth);
-			
 			personArray[i].setSocialClass(socialClass);
 		}
 	}
@@ -67,16 +96,18 @@ public class mainTest {
 	}
 	private static int getSocialClass(int maxWealth,int wealth){
 		int socialClass = 0;
-		if(wealth<(1/3)*maxWealth){
+		float classOneStandard = maxWealth*1/3;
+		float classTwoStandard = maxWealth*2/3;
+		if(wealth<classOneStandard){
 			socialClass = 1;
-		}else if(wealth<(2/3)*maxWealth){
+		}else if(wealth <classTwoStandard &&wealth >=classOneStandard){
 			socialClass = 2;
-		}else if(wealth>=(2/3)*maxWealth){
+		}else if(wealth >=classTwoStandard){
 			socialClass = 3;
-			System.out.println("check class");
 		}else{
 			socialClass = 0;
 		}
+		
 		return socialClass;
 	}
 	private static void initializeLand(Land[][] landArray, Land[][] futureLandArray){
@@ -223,7 +254,6 @@ public class mainTest {
 			if(currentWealth<0||currentAge>=lifeExpectancy){
 				initializeAPerson(personArray,i);
 				int wealth = personArray[i].getWealth();
-				totalWealth= totalWealth +wealth;
 				if(wealth>maxWealth){
 					 maxWealth = wealth;
 				}

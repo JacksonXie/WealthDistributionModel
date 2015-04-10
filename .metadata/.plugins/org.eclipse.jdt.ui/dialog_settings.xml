@@ -2,7 +2,9 @@
 <section name="Workbench">
 	<item value="JavaSE-1.7" key="org.eclipse.jdt.ui.last.selected.execution.enviroment"/>
 	<item value="false" key="delegateUpdating"/>
-	<item value="/Users/minjiexie/Desktop/课件/DS" key="org.eclipse.jdt.ui.last.external.project"/>
+	<item value="/Users/minjiexie/Desktop/Project/sampleProject" key="org.eclipse.jdt.ui.last.external.project"/>
+	<item value="2" key="org.eclipse.jdt.ui.last.selected.jre.kind2"/>
+	<item value="Java SE 8 [1.8.0_11]" key="org.eclipse.jdt.ui.last.selected.project.jre"/>
 	<section name="RefactoringWizard.preview">
 		<item value="600" key="width"/>
 		<item value="400" key="height"/>

@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Extract local variable &apos;queryArray2&apos; from expression &apos;queryArray&apos;&#x0A;- Original project: &apos;knowledgeTechnology&apos;&#x0A;- Variable name: &apos;queryArray2&apos;&#x0A;- Destination method: &apos;knowledgeTechnology.mainTest.main()&apos;&#x0A;- Variable expression: &apos;queryArray&apos;" description="Extract local variable &apos;queryArray2&apos;" final="false" id="org.eclipse.jdt.ui.extract.temp" input="/src&lt;knowledgeTechnology{mainTest.java" name="queryArray2" replace="false" selection="1088 10" stamp="1428571071150" version="1.0"/>
+</session>

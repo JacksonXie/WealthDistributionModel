@@ -44,12 +44,6 @@ public class Calculator {
 		}
 		return grainHere;
 	}
-	/*public static double decreaseSpreadGrain(int N,double grainHere){
-		double grain = grainHere;
-		if(N==0){
-			return grain;
-		}else{
-			return decreaseSpreadGrain(N-1,grain)*0.75;
-		}
-	}*/
+	public static int[] sortWealth(int[]){
+	}
 }
