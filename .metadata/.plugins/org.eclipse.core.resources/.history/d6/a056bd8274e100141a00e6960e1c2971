@@ -1,0 +1,124 @@
+package wealthDistribution;
+
+import java.util.Random;
+
+public class Calculator {
+	static Random random = new Random();
+	public static int getLifeExpectancy(int lifeExpectancyMax,int lifeExpectancyMin){
+		int lifeExpectancy = lifeExpectancyMin + random.nextInt(lifeExpectancyMax-lifeExpectancyMin+1);
+		return lifeExpectancy;
+	}
+	public static int getAge(int lifeExpectancy){
+		int age = random.nextInt(lifeExpectancy);
+		return age;
+	}
+	public static int getMetabolism(int metabolismMax){
+		int metabolism = 1 + random.nextInt(metabolismMax);
+		return metabolism;
+	}
+	public static int getVision(int maxVision){
+		int vision = 1 + random.nextInt(maxVision);
+		return vision;
+	}
+	public static int getXLocation(int xLocationMax){
+		int xLocation = random.nextInt(xLocationMax);
+		return xLocation;
+	}
+	public static int getYLocation(int yLocationMax){
+		int yLocation = random.nextInt(yLocationMax);
+		return yLocation;
+	}
+	public static int getHeadDirection(){
+		int headDirection = random.nextInt(4);
+		return headDirection;
+	}
+	public static int getWealth(int metabolism){
+		int wealth = metabolism + random.nextInt(50);
+		return wealth;
+	}
+	public static int getGrainHere(double percentBestLand,int maxGrain){
+		int grainHere = 0;
+		double percent = 100*random.nextDouble();
+		if(percent<=percentBestLand){
+			grainHere = maxGrain;
+		}
+		return grainHere;
+	}
+	//Bubble Sort
+	public static int[] sortWealth(int[] wealthArray){
+		for (int i = (wealthArray.length - 1); i >= 0; i--) {
+            for (int j = 1; j <= i; j++) {
+                if (wealthArray[j - 1] > wealthArray[j]) {
+                    int temp = wealthArray[j - 1];
+                    wealthArray[j - 1] = wealthArray[j];
+                    wealthArray[j] = temp;
+                }
+            }
+        }
+        
+        return wealthArray;
+	}
+	public static int getTotalWealth(int[] wealthArray){
+		int totalWealth=0;
+		for(int i=0;i<wealthArray.length;i++){
+			totalWealth = totalWealth+wealthArray[i];
+		}
+		return totalWealth;
+	}
+	public static float[] getPopulationPercent(Person[] personArray){
+		float peopleNumber = (float)(personArray.length);
+		float[] percentArray = new float[personArray.length];
+		for(int i=1;i<=personArray.length;i++){
+			float currentPopulation = (float)(i);
+			percentArray[i-1]=currentPopulation/peopleNumber*100;
+		}	
+		return percentArray;
+	}
+	public static float[] getIndividualWealthPercent(int totalWealth,int[] wealthArray){
+		float[] individualWealthArray = new float[wealthArray.length];
+		for(int i=0;i<wealthArray.length;i++){
+			individualWealthArray[i]=(float)(wealthArray[i])/(float)(totalWealth);
+		}
+		return individualWealthArray;
+	}
+	public static float[] getWealthPercent(float[] individualWealthArray){
+		float[] wealthPercentArray = new float[individualWealthArray.length];
+		wealthPercentArray[0]=individualWealthArray[0];
+		for(int i=1;i<wealthPercentArray.length;i++){
+			wealthPercentArray[i]= wealthPercentArray[i-1]+individualWealthArray[i];
+		}
+		if(wealthPercentArray[wealthPercentArray.length-1]!=1){
+			wealthPercentArray[wealthPercentArray.length-1]=1;
+		}
+		return wealthPercentArray;
+	}
+	public static int getSocialClass(int maxWealth,int wealth){
+		int socialClass = 0;
+		float classOneStandard = maxWealth*1/3;
+		float classTwoStandard = maxWealth*2/3;
+		if(wealth<classOneStandard){
+			socialClass = 1;
+		}else if(wealth <classTwoStandard && wealth >=classOneStandard){
+			socialClass = 2;
+		}else if(wealth >=classTwoStandard){
+			socialClass = 3;
+		}else{
+			socialClass = 0;
+		}	
+		return socialClass;
+	}
+	public static int[] getSocialClassNumber(int[]wealthArray,int maxWealth){
+		int[] socialClassNumber = new int[3];
+		for(int i=0;i<wealthArray.length;i++){
+			int socialClass = getSocialClass(maxWealth,wealthArray[i]);
+			if(socialClass==1){
+				socialClassNumber[0]=socialClassNumber[0]+1;
+			}else if(socialClass==2){
+				socialClassNumber[1]=socialClassNumber[1]+1;
+			}else{
+				socialClassNumber[2]=socialClassNumber[2]+1;
+			}
+		}
+		return socialClassNumber;
+	}
+}

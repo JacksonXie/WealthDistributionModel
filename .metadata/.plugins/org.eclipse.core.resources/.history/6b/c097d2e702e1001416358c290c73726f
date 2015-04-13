@@ -1,0 +1,46 @@
+package knowledgeTechnology;
+
+import java.util.ArrayList;
+
+public class Ngrams {
+	public static int Twogram(String query,String tweet){
+		int nGramDistance = 0;
+		int sameElementNumber = 0;
+		char[] queryChar = query.toLowerCase().toCharArray();
+		char[] tweetChar = tweet.toLowerCase().toCharArray();
+		ArrayList<String> queryArray = new ArrayList<String>();
+		ArrayList<String> tweetArray = new ArrayList<String>();
+		for(int i=0;i<queryChar.length-1;i++){
+			String str = String.valueOf(queryChar[i])+String.valueOf(queryChar[i+1]);
+			if(ifHasSameElement(queryArray,str)){
+				queryArray.add(str);
+			}
+		}
+		for(int i=0;i<tweetChar.length-1;i++){
+			String str = String.valueOf(tweetChar[i])+String.valueOf(tweetChar[i+1]);
+			if(ifHasSameElement(queryArray,str)){
+				tweetChar.add(str);
+			}
+		}
+		for(int i=0;i<tweetArray.size();i++)
+			for(int j=0;j<queryArray.size();j++){
+				if(tweetArray.get(i).equals(queryArray.get(j))){
+					sameElementNumber++;
+					System.out.println(tweetArray[i]);
+					System.out.println(queryArray[j]);
+				}
+			}
+		System.out.println("sm"+sameElementNumber);
+		nGramDistance =(queryArray.length)-1+(tweetArray.length)-1-(2*sameElementNumber);
+		return nGramDistance;
+	}
+	public static boolean ifHasSameElement(ArrayList<String> Array,String str){
+		boolean boo = true;
+		for(int i=0;i<Array.size();i++){
+			if(str.equals(Array.get(index))){
+				boo = false;
+			}
+		}
+		return boo;
+	}
+}

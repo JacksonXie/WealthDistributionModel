@@ -1,0 +1,5 @@
+1428830739027	Convert local variable 'stringOneArray' to field
+1428832250769	Convert local variable 'sameElement' to field
+1428832319772	Convert local variable 'sameElement' to field
+1428832573576	Convert local variable 'sameElementNum' to field
+1428832583878	Encapsulate field 'sameElementNum'

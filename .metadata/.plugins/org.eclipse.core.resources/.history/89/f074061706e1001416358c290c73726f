@@ -1,0 +1,50 @@
+package knowledgeTechnology;
+
+import java.util.ArrayList;
+import java.util.HashMap;  
+import java.util.HashSet;  
+import java.util.LinkedList;  
+import java.util.Map;  
+import java.util.Map.Entry;  
+import java.util.Set;  
+public class Ngrams {
+	public static int Twogram(String query,String tweet){
+		int nGramDistance = 0;
+		int intersectNumber = 0;
+		for(int i=0;i<tweetArray.size();i++)
+			for(int j=0;j<queryArray.size();j++){
+				if(tweetArray.get(i).equals(queryArray.get(j))){
+					sameElementNumber++;
+					System.out.println(tweetArray.get(i));
+					System.out.println(queryArray.get(j));
+				}
+			}
+		System.out.println("sm"+sameElementNumber);
+		nGramDistance =(queryChar.length)-1+(tweetChar.length)-1-(2*sameElementNumber);
+		return nGramDistance;
+	}
+	//求两个数组的交集  
+    public static String[] intersect(String[] arr1, String[] arr2) {  
+        Map<String, Boolean> map = new HashMap<String, Boolean>();  
+        LinkedList<String> list = new LinkedList<String>();  
+        for (String str : arr1) {  
+            if (!map.containsKey(str)) {  
+                map.put(str, Boolean.FALSE);  
+            }  
+        }  
+        for (String str : arr2) {  
+            if (map.containsKey(str)) {  
+                map.put(str, Boolean.TRUE);  
+            }  
+        }  
+  
+        for (Entry<String, Boolean> e : map.entrySet()) {  
+            if (e.getValue().equals(Boolean.TRUE)) {  
+                list.add(e.getKey());  
+            }  
+        }  
+  
+        String[] result = {};  
+        return list.toArray(result);  
+    }  
+}

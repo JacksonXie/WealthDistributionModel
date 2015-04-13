@@ -5,13 +5,13 @@ import java.io.IOException;
 
 public class mainTest {
 	//parameters of coordinate
-    public static int xLocationMax = 10;
-    public static int yLocationMax = 10;
-    public static int ticks = 10;
+    public static int xLocationMax = 20;
+    public static int yLocationMax = 20;
+    public static int ticks =100;
 	//parameters of people 
 	public static int lifeExpectancyMax = 100;
 	public static int lifeExpectancyMin = 50;
-	public static int metabolismMax = 100;
+	public static int metabolismMax =100;
 	public static int maxVision = 4;
 	public static int peopleNumber = 50;
 	public static int maxWealth;
@@ -21,64 +21,126 @@ public class mainTest {
 	public static double percentBestLand = 20.0;
 	public static int grainGrowthInterval = 1;
 	public static int numGrainGrow = 5;
+	//Graph parameters
+	public static int totalWealth;
+	public static float[] populationPercentArray;
+	public static float[] individualWealthPercentArray;
+	public static float[] wealthPercentArray;
+	public static int[] socialClass;
+
 	//CsvFileWriter
 	private static final String COMMA_DELIMITER = ",";
 	private static final String NEW_LINE_SEPARATOR = "\n";
-	private static final String FILE_HEADER = "Wealth,ticks";
+	private static final String LORENZ_FILE_HEADER = "ticks,wealth,populationPercent,indiWealthPercent,wealthPercent";
+	private static final String SOCIALCLASS_FILE_HEADER = "ticks,low,mid,up";
 	public static void main(String[] args) {
 		 Land[][] landArray = new Land[yLocationMax][xLocationMax];
 		 Land[][] futureLandArray = new Land[yLocationMax][xLocationMax];
 		 Person[] personArray = new Person[peopleNumber];
 		 initializePeople(personArray);
 		 initializeLand(landArray,futureLandArray);
-		 String fileName = System.getProperty("user.dir")+"/demo.csv";
-		 FileWriter fileWriter = null;
+		 populationPercentArray= Calculator.getPopulationPercent(personArray);
+		 String lorenzFileName = System.getProperty("user.dir")+"/lorenz-and-gini.csv";
+		 FileWriter lorenzFileWriter = null;
 		 try {
-				fileWriter = new FileWriter(fileName);
+			 lorenzFileWriter = new FileWriter(lorenzFileName);
 				//Write the CSV file header
-				fileWriter.append(FILE_HEADER.toString());	
+			 lorenzFileWriter.append(LORENZ_FILE_HEADER.toString());	
 				//Add a new line separator after the header
-				fileWriter.append(NEW_LINE_SEPARATOR);
+			 lorenzFileWriter.append(NEW_LINE_SEPARATOR);
+			}catch (Exception e) {
+				System.out.println("Error in CsvFileWriter !!!");
+				e.printStackTrace();
+			} 
+		 String socialClassfileName = System.getProperty("user.dir")+"/socialClass.csv";
+		 FileWriter socialClassFileWriter = null;
+		 try {
+			 socialClassFileWriter = new FileWriter(socialClassfileName);
+				//Write the CSV file header
+			 socialClassFileWriter.append(SOCIALCLASS_FILE_HEADER.toString());	
+				//Add a new line separator after the header
+			 socialClassFileWriter.append(NEW_LINE_SEPARATOR);
 			}catch (Exception e) {
 				System.out.println("Error in CsvFileWriter !!!");
 				e.printStackTrace();
 			} 
 		 for(int N=0;N<ticks;N++){
-			 runTheSystem(personArray,landArray,futureLandArray,N);
+			 int[] wealthArray = new int[personArray.length];
+			 for(int i=0;i<personArray.length;i++){
+				 wealthArray[i] = personArray[i].getWealth();
+			 }
+			 Calculator.sortWealth(wealthArray);
+			 maxWealth = wealthArray[personArray.length-1];
+			 totalWealth = Calculator.getTotalWealth(wealthArray);
+			 individualWealthPercentArray = Calculator.getIndividualWealthPercent(totalWealth, wealthArray);
+			 wealthPercentArray = Calculator.getWealthPercent(individualWealthPercentArray);
+			 socialClass = Calculator.getSocialClassNumber(wealthArray,maxWealth);
+			 if(N%20==0){
+				 try {
+					 lorenzFileWriter.append(String.valueOf(N));
+					 lorenzFileWriter.append(COMMA_DELIMITER);
+					 lorenzFileWriter.append(String.valueOf(0));
+					 lorenzFileWriter.append(COMMA_DELIMITER);
+					 lorenzFileWriter.append(String.valueOf(0));
+					 lorenzFileWriter.append(COMMA_DELIMITER);
+					 lorenzFileWriter.append(String.valueOf(0));
+					 lorenzFileWriter.append(COMMA_DELIMITER);
+					 lorenzFileWriter.append(String.valueOf(0));
+					 lorenzFileWriter.append(NEW_LINE_SEPARATOR);
+						for(int i=0;i<personArray.length;i++){
+							lorenzFileWriter.append(String.valueOf(N));
+							lorenzFileWriter.append(COMMA_DELIMITER);
+							lorenzFileWriter.append(String.valueOf(wealthArray[i]));
+							lorenzFileWriter.append(COMMA_DELIMITER);
+							lorenzFileWriter.append(String.valueOf(populationPercentArray[i]));
+							lorenzFileWriter.append(COMMA_DELIMITER);
+							lorenzFileWriter.append(String.valueOf(individualWealthPercentArray[i])); 
+							lorenzFileWriter.append(COMMA_DELIMITER);
+							lorenzFileWriter.append(String.valueOf(wealthPercentArray[i])); 
+							lorenzFileWriter.append(NEW_LINE_SEPARATOR);
+							}
+						lorenzFileWriter.flush();
+					}catch (Exception e) {
+						System.out.println("Error in CsvFileWriter !!!");
+						e.printStackTrace();
+					}  
+			 }
 			 try {
-					for(int i=0;i<personArray.length;i++){
-							fileWriter.append(String.valueOf(personArray[i].getWealth()));
-							fileWriter.append(COMMA_DELIMITER);
-							fileWriter.append(String.valueOf(N));
-							fileWriter.append(NEW_LINE_SEPARATOR);
-						}
-					fileWriter.flush();
+				    socialClassFileWriter.append(String.valueOf(N));
+					socialClassFileWriter.append(COMMA_DELIMITER);
+					socialClassFileWriter.append(String.valueOf(socialClass[0]));
+					socialClassFileWriter.append(COMMA_DELIMITER);
+					socialClassFileWriter.append(String.valueOf(socialClass[1]));
+					socialClassFileWriter.append(COMMA_DELIMITER);
+					socialClassFileWriter.append(String.valueOf(socialClass[2]));
+					socialClassFileWriter.append(NEW_LINE_SEPARATOR);
+					socialClassFileWriter.flush();
 				}catch (Exception e) {
 					System.out.println("Error in CsvFileWriter !!!");
 					e.printStackTrace();
-				} 
+				}  
+			 runTheSystem(personArray,landArray,futureLandArray,N);
 		 }
 		 try {
-			        fileWriter.flush();
-					fileWriter.close();
+			 lorenzFileWriter.flush();
+			 lorenzFileWriter.close();
 			  } catch (IOException e) {
 					System.out.println("Error while flushing/closing fileWriter !!!");
 	                e.printStackTrace();
 			  }
+		 
 					
+	}
+	private static void runTheSystem(Person[] personArray,Land[][] landArray,Land[][] futureLandArray,int tick){
+		//turn-towards-grain
+		turnTowardsGrain(personArray,landArray);
+		moveEatAgeDie(personArray,landArray,futureLandArray);
+		staticEachLandPeopleNumber(landArray,personArray);
+		growGrain(landArray,futureLandArray,tick);
 	}
 	private static void initializePeople(Person[] personArray){
 		for (int i=0;i<personArray.length;i++){
 			 initializeAPerson(personArray,i);
-			 int wealth = personArray[i].getWealth();
-			 if(maxWealth < wealth){
-				 maxWealth = wealth;
-			 }
-		}
-		for(int i=0;i<personArray.length;i++){
-			int wealth = personArray[i].getWealth();
-			int socialClass = getSocialClass(maxWealth,wealth);
-			personArray[i].setSocialClass(socialClass);
 		}
 	}
 	private static void initializeAPerson(Person[] personArray, int i){
@@ -93,22 +155,6 @@ public class mainTest {
          int nextXLocation = 0;
          int nextYLocation = 0;
 		 personArray[i]  = new Person(age,wealth,lifeExpectancy,metabolism,vision,xLocation,yLocation,HeadDirection,nextXLocation,nextYLocation);
-	}
-	private static int getSocialClass(int maxWealth,int wealth){
-		int socialClass = 0;
-		float classOneStandard = maxWealth*1/3;
-		float classTwoStandard = maxWealth*2/3;
-		if(wealth<classOneStandard){
-			socialClass = 1;
-		}else if(wealth <classTwoStandard &&wealth >=classOneStandard){
-			socialClass = 2;
-		}else if(wealth >=classTwoStandard){
-			socialClass = 3;
-		}else{
-			socialClass = 0;
-		}
-		
-		return socialClass;
 	}
 	private static void initializeLand(Land[][] landArray, Land[][] futureLandArray){
 		int eachNeighborGetFive = (int)Math.floor(5*maxGrain*0.25*0.125);
@@ -171,13 +217,6 @@ public class mainTest {
 					}
 				}
 			}
-	}
-	private static void runTheSystem(Person[] personArray,Land[][] landArray,Land[][] futureLandArray,int tick){
-		//turn-towards-grain
-		turnTowardsGrain(personArray,landArray);
-		moveEatAgeDie(personArray,landArray,futureLandArray);
-		staticEachLandPeopleNumber(landArray,personArray);
-		growGrain(landArray,futureLandArray,tick);
 	}
 	private static void turnTowardsGrain(Person[] personArray,Land[][] landArray){
 		int nextHeadDirection = 0;
@@ -253,12 +292,6 @@ public class mainTest {
 			//if person die, then random create a new person.else move to a new land
 			if(currentWealth<0||currentAge>=lifeExpectancy){
 				initializeAPerson(personArray,i);
-				int wealth = personArray[i].getWealth();
-				if(wealth>maxWealth){
-					 maxWealth = wealth;
-				}
-				int socialClass = getSocialClass(maxWealth,wealth);
-				personArray[i].setSocialClass(socialClass);
 			}else{
 				int currentXLocation = personArray[i].getxLocation();
 				int currentYLocation = personArray[i].getyLocation();
@@ -272,8 +305,6 @@ public class mainTest {
 				landArray[nextYLocation][nextXLocation].setLandPeopleNumber(nextLandPeopleNumber+1);
 				personArray[i].setAge(currentAge);
 				personArray[i].setWealth(currentWealth);
-				int socialClass = getSocialClass(maxWealth,currentWealth);
-				personArray[i].setSocialClass(socialClass);
 			}
 		}
 		// static people on lands

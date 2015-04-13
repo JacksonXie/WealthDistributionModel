@@ -1,0 +1,21 @@
+package knowledgeTechnology;
+
+public class matchingAlgorithm {
+	public static boolean naiveSearch(char[] pattern, char[] text) {
+        int M = pattern.length;
+        int N = text.length;
+        boolean boo = false;
+        for (int i = 0; i <= N - M; i++) {
+            int j;
+            for (j = 0; j < M; j++) {
+                if (text[i+j] != pattern[j])
+                    break;
+            }
+            if (j == M) {
+            	boo = true;
+            	return boo;
+            }          
+        }
+        return boo;               
+    }
+}

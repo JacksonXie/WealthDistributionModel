@@ -1,0 +1,34 @@
+package knowledgeTechnology;
+
+import java.util.ArrayList;
+
+public class Ngrams {
+	public static int Twogram(String query,String tweet){
+		int nGramDistance = 0;
+		int sameElementNumber = 0;
+		char[] queryChar = query.toLowerCase().toCharArray();
+		char[] tweetChar = tweet.toLowerCase().toCharArray();
+		ArrayList<String> queryArray = new ArrayList<String>();
+		ArrayList<String> tweetArray = new ArrayList<String>();
+		for(int i=0;i<queryChar.length-1;i++){
+			String querychar = String.valueOf(queryChar[i])+String.valueOf(queryChar[i+1]);	
+			for(int j=0 ;j<)
+			queryArray[i] = String.valueOf(queryChar[i])+String.valueOf(queryChar[i+1]);	
+		}
+		for(int i=0;i<tweetChar.length-1;i++){
+			tweetArray[i] = String.valueOf(tweetChar[i])+String.valueOf(tweetChar[i+1]);
+		}
+		for(int i=0;i<tweetArray.length-1;i++)
+			for(int j=0;j<queryArray.length-1;j++){
+				if(tweetArray[i].equals(queryArray[j])){
+					sameElementNumber++;
+					System.out.println(tweetArray[i]);
+					System.out.println(queryArray[j]);
+				}
+			}
+		System.out.println("sm"+sameElementNumber);
+		nGramDistance =(queryArray.length)-1+(tweetArray.length)-1-(2*sameElementNumber);
+		return nGramDistance;
+	}
+
+}

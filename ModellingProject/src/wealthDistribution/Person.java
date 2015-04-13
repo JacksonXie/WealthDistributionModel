@@ -9,7 +9,6 @@ public class Person {
 	private int xLocation;
 	private int yLocation;
 	private int headDirection;
-	private int socialClass;
 	private int nextXLocation;
 	private int nextYLocation;
 	
@@ -24,17 +23,6 @@ public class Person {
 		this.setHeadDirection(headDirection);
 		this.setNextXLocation(nextXLocation);
 		this.setNextYLocation(nextYLocation);
-	}
-	static public String toString(Person person){
-		return(" age: "+person.getAge()+" wealth: "
-	    +person.getWealth()+" lifeexpectancy: "+
-	    person.getLifeExpectancy()+" metabolism: "+person.getMetabolism()+
-	    " vision: "+person.getVision()+" xLocation "+person.getxLocation()+" yLocation "+person.getyLocation()+
-	    " headDirector: "+person.getHeadDirection()+" socialClass "+person.getSocialClass()+
-	    " nextXlocation: "+person.getNextXLocation()+" nextYlocation: "+person.getNextYLocation());
-	}
-	public Person(int socialClass){
-		this.setSocialClass(socialClass);
 	}
 	public int getWealth() {
 		return wealth;
@@ -78,13 +66,6 @@ public class Person {
 	public void setyLocation(int yLocation) {
 		this.yLocation = yLocation;
 	}
-	public int getSocialClass() {
-		return socialClass;
-	}
-	public void setSocialClass(int socialClass) {
-		this.socialClass = socialClass;
-	}
-
 	public int getHeadDirection() {
 		return headDirection;
 	}

@@ -1,0 +1,74 @@
+package knowledgeTechnology;
+
+import java.util.ArrayList;
+import java.util.Scanner;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+
+public class mainTest {
+
+	public static void main(String[] args) {
+		Scanner inputStreamTweets = null;
+		Scanner inputStreamQuery = null;
+		int nGramDistance = null;
+       	ArrayList<String> tweetsArrayList = new ArrayList<String>();
+		ArrayList<String> queryArrayList = new ArrayList<String>();
+		ArrayList<String> tweetsSoundexArrayList = new ArrayList<String>();
+	    ArrayList<String> querySoundexArrayList = new ArrayList<String>();
+		try{
+			inputStreamTweets = new Scanner(new FileInputStream("/Users/minjiexie/Desktop/tweets/tweets.3K.txt"));
+			inputStreamQuery = new Scanner(new FileInputStream("/Users/minjiexie/Desktop/query/queries.1K.txt"));
+		}catch(FileNotFoundException e){
+			System.out.println("File was not found");
+			System.exit(0);
+		}
+		int  = Ngrams.Twogram("xieminjie", "minjiexie");
+		//System.out.println(i);
+		/*
+		 * N-grams
+		 * */
+		
+		/* Soundex
+		 * 
+		 * */
+	/*    while(inputStreamQuery.hasNextLine()){
+			String str = inputStreamQuery.nextLine();
+			queryArrayList.add(str);
+			String[]queryWords = str.split("\\s+");
+			String compareString ="";
+			for(int i=0;i<queryWords.length;i++){
+				compareString = compareString+" "+Soundex.soundex(queryWords[i].toLowerCase());
+			}
+			querySoundexArrayList.add(compareString);
+		}
+	    while(inputStreamTweets.hasNextLine()){
+			String str = inputStreamTweets.nextLine();
+			tweetsArrayList.add(str);
+			String[]tweetsWords = str.split("\\s+");
+			String compareString ="";
+			for(int i=1;i<tweetsWords.length;i++){
+				compareString = compareString+" "+Soundex.soundex(tweetsWords[i].toLowerCase());
+			}
+			tweetsSoundexArrayList.add(compareString);
+		}
+	    String tweet=null;
+	    String query=null;
+	    for(int i=0;i<tweetsSoundexArrayList.size();i++)
+	    	for(int j=0;j<querySoundexArrayList.size();j++){
+		    	tweet = tweetsSoundexArrayList.get(i);
+		    	char[] tweetsCharArray = tweet.toCharArray();
+	    		query = querySoundexArrayList.get(j);
+	    		char[] queryCharArray = query.toCharArray();
+	    		if(matchingAlgorithm.naiveSearch(queryCharArray,tweetsCharArray)){
+	    			/*String queryS = queryArrayList.get(j);
+	    			String tweetS = tweetsArrayList.get(i);
+	    			char[]queryChar = queryS.toCharArray();
+	    			char[]tweetChar = tweetS.toCharArray();
+	    			if(matchingAlgorithm.naiveSearch(tweetChar,queryChar)){
+	    				System.out.println(queryArrayList.get(j));
+	    				System.out.println(tweetsArrayList.get(i));
+	    			}
+	    		}
+	    	}*/
+	}
+}

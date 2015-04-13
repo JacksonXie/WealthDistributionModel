@@ -1,0 +1,60 @@
+package knowledgeTechnology;
+
+import java.util.ArrayList;
+import java.util.HashMap;  
+import java.util.HashSet;  
+import java.util.LinkedList;  
+import java.util.Map;  
+import java.util.Map.Entry;   
+public class Ngrams {
+	public static int Twogram(String query,String tweet){
+		int nGramDistance = 0;
+		int sameElementNumber = 0;
+		char[] queryChar = query.toLowerCase().toCharArray();
+		char[] tweetChar = tweet.toLowerCase().toCharArray();
+		ArrayList<String> queryArrayList = new ArrayList<String>();
+		ArrayList<String> tweetArrayList = new ArrayList<String>();
+		for(int i=0;i<queryChar.length-1;i++){
+			String str = String.valueOf(queryChar[i])+String.valueOf(queryChar[i+1]);
+			queryArrayList.add(str);
+		}
+		for(int i=0;i<tweetChar.length-1;i++){
+			String str = String.valueOf(tweetChar[i])+String.valueOf(tweetChar[i+1]);
+			tweetArrayList.add(str);
+		}
+		String[] queryArray = new String[queryArrayList.size()];
+		for(int i =0;i<queryArray.length;i++){
+			queryArray[i]=queryArrayList.get(i);
+		}
+		String[] tweetArray = new String[tweetArrayList.size()];
+		for(int i =0;i<tweetArray.length;i++){
+			tweetArray[i]=tweetArrayList.get(i);
+		}
+		nGramDistance =(queryChar.length)-1+(tweetChar.length)-1-(2*sameElementNumber);
+		return nGramDistance;
+	}
+	//求两个数组的交集  
+    public static String[] intersect(String[] arr1, String[] arr2) {  
+        Map<String, Boolean> map = new HashMap<String, Boolean>();  
+        LinkedList<String> list = new LinkedList<String>();  
+        for (String str : arr1) {  
+            if (!map.containsKey(str)) {  
+                map.put(str, Boolean.FALSE);  
+            }  
+        }  
+        for (String str : arr2) {  
+            if (map.containsKey(str)) {  
+                map.put(str, Boolean.TRUE);  
+            }  
+        }  
+  
+        for (Entry<String, Boolean> e : map.entrySet()) {  
+            if (e.getValue().equals(Boolean.TRUE)) {  
+                list.add(e.getKey());  
+            }  
+        }  
+  
+        String[] result = {};  
+        return list.toArray(result);  
+    }  
+}
